@@ -1,14 +1,18 @@
 // this is frontend
 var socket = io();
 
-const btn = document.getElementById('btn');
-btn.onclick = function exec (){
-    socket.emit('message from client')
-}
+let btn = document.getElementById('btn');
+let inputMsg = document.getElementById('newmsg');
+let msgList = document.getElementById('msglist');
 
-socket.on('from server',()=>{
-    console.log('collected a event from server');
-    const div = document.createElement('div');
-    div.innerText = 'new event from server';
-    document.body.appendChild(div);
-})
+btn.onclick = function exec(){
+    socket.emit('msg_send',{
+          msg:inputMsg.value
+    });
+
+    socket.on('msg_rcvd',(data)=>{
+        let ltmsg = document.createElement('li');
+        ltmsg.innerText = data.msg;
+        msgList.appendChild(ltmsg);
+    })
+}
